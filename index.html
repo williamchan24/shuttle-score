@@ -98,7 +98,14 @@
         </button>
       </div>
 
-      <p class="status" id="status" aria-live="polite"></p>
+      <div class="foot">
+        <!-- A top-down court, drawn the same way round as the screen: the server's box lights up, the receiver's is ringed -->
+        <div class="mini" id="mini" aria-hidden="true">
+          <div class="mini-half" data-half="0"><span class="box"></span><span class="box"></span></div>
+          <div class="mini-half" data-half="1"><span class="box"></span><span class="box"></span></div>
+        </div>
+        <p class="status" id="status" aria-live="polite"></p>
+      </div>
 
       <div class="banner" id="banner" role="status" hidden></div>
     </main>

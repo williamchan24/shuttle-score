@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { call, gameWonBy, newMatch, pointFor, rally, receiverName, serverName, serviceCourt, type Config, type MatchState, type Side } from './rules';
+import { call, gameWonBy, newMatch, pointFor, positions, rally, receiverName, serverName, serviceCourt, type Config, type MatchState, type Side } from './rules';
 
 const singles: Config = { mode: 'singles', bestOf: 3, names: { A: ['Brandon', ''], B: ['Jun Hao', ''] }, firstServer: 'A' };
 const doubles: Config = { mode: 'doubles', bestOf: 3, names: { A: ['A1', 'A2'], B: ['B1', 'B2'] }, firstServer: 'A' };
@@ -86,6 +86,25 @@ describe('doubles service rotation', () => {
     expect([serverName(s), receiverName(s), serviceCourt(s)]).toEqual(['B2', 'A2', 'right']);
     s = rally(s, 'A'); // 2-2: service over, A on 2 -> the A player in the right court (A2)
     expect([serverName(s), receiverName(s), serviceCourt(s)]).toEqual(['A2', 'B2', 'right']);
+  });
+});
+
+describe('where players stand', () => {
+  it('puts both singles players in the court the serve is in', () => {
+    let s = newMatch(singles);
+    expect(positions(s, 'A')).toEqual({ right: 'Brandon', left: null });
+    expect(positions(s, 'B')).toEqual({ right: 'Jun Hao', left: null });
+    s = rally(s, 'A'); // 1-0: serve from the left
+    expect(positions(s, 'A')).toEqual({ right: null, left: 'Brandon' });
+    expect(positions(s, 'B')).toEqual({ right: null, left: 'Jun Hao' });
+  });
+
+  it('tracks both doubles partners as they swap', () => {
+    let s = newMatch(doubles);
+    expect(positions(s, 'A')).toEqual({ right: 'A1', left: 'A2' });
+    s = rally(s, 'A'); // serving side wins: A1 and A2 swap
+    expect(positions(s, 'A')).toEqual({ right: 'A2', left: 'A1' });
+    expect(positions(s, 'B')).toEqual({ right: 'B1', left: 'B2' }); // receivers never move
   });
 });
 

@@ -1,7 +1,7 @@
 import './style.css';
 import {
-  call, isDecider, newMatch, other, pointFor, rally, receiverName, serverName, serviceCourt, sideName,
-  type Config, type MatchState, type Side,
+  call, isDecider, newMatch, other, pointFor, positions, rally, receiverName, serverName, serviceCourt, sideName,
+  type Config, type Court, type MatchState, type Side,
 } from './lib/rules';
 import { addToHistory, loadCurrent, loadHistory, loadVoice, saveCurrent, saveVoice, type Finished } from './store';
 
@@ -179,6 +179,8 @@ function render(prev: MatchState | null, announce = true) {
     ? ''
     : `${serverName(s)} serves from the ${court_} court to ${receiverName(s)}`;
 
+  renderMini(s);
+
   if (s.event === 'interval') flash('Interval');
   else if (s.event === 'change-ends') flash('Interval, change ends');
   else if (s.event === 'game') flash(`Game to ${sideName(s.config, s.games[s.games.length - 1].A > s.games[s.games.length - 1].B ? 'A' : 'B')}`);
@@ -186,6 +188,44 @@ function render(prev: MatchState | null, announce = true) {
 
   if (announce) speak(call(prev, s));
 }
+
+// ---------- Mini court ----------
+const mini = $('mini');
+const portrait = window.matchMedia('(orientation: portrait)');
+
+/**
+ * Draw the court the same way round as the score halves, from above.
+ * Each player faces the net, so which screen box is their "right" court depends on where they are:
+ *   upright phone, side at the top (facing down): screen-left box is their right court
+ *   upright phone, side at the bottom (facing up): screen-right box is their right court
+ *   sideways, side on the left (facing right): the bottom box is their right court
+ *   sideways, side on the right (facing left): the top box is their right court
+ */
+function renderMini(s: MatchState) {
+  const upright = portrait.matches;
+  mini.dataset.orient = upright ? 'portrait' : 'landscape';
+  const shown: Side[] = s.endsSwapped ? ['B', 'A'] : ['A', 'B']; // first = top (upright) or left (sideways)
+  const boxOrder: Record<0 | 1, [Court, Court]> = upright
+    ? { 0: ['right', 'left'], 1: ['left', 'right'] }
+    : { 0: ['left', 'right'], 1: ['right', 'left'] };
+  const serveCourt = serviceCourt(s);
+  const receiver = other(s.server);
+
+  mini.querySelectorAll<HTMLElement>('.mini-half').forEach((half) => {
+    const idx = Number(half.dataset.half) as 0 | 1;
+    const side = shown[idx];
+    half.dataset.side = side;
+    const where = positions(s, side);
+    half.querySelectorAll<HTMLElement>('.box').forEach((box, b) => {
+      const courtName = boxOrder[idx][b];
+      const name = where[courtName];
+      box.textContent = name ? name.split(' ')[0].slice(0, 9) : '';
+      box.classList.toggle('srv', !s.winner && side === s.server && courtName === serveCourt);
+      box.classList.toggle('rcv', !s.winner && side === receiver && courtName === serveCourt);
+    });
+  });
+}
+portrait.addEventListener('change', () => { if (state) renderMini(state); });
 
 /** The score drops in from slightly above, so a change is noticed without being loud. */
 function bump(el: HTMLElement) {

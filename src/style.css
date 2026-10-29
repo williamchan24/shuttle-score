@@ -105,7 +105,21 @@ legend { font-size: 14px; font-weight: 600; color: var(--muted); padding: 0; mar
 .half[data-point="game"]::after { content: "Game point"; }
 .half[data-point="match"]::after { content: "Match point"; }
 
-.status { margin: 0; text-align: center; color: var(--ink-2); font-size: 16px; min-height: 1.5em; }
+.foot { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.status { margin: 0; color: var(--ink-2); font-size: 16px; min-height: 1.5em; max-width: 30ch; }
+
+/* Mini court: two halves either side of the net, each split into its right and left service courts */
+.mini { flex-shrink: 0; display: grid; gap: 3px; padding: 3px; border-radius: 8px; background: var(--ink-2); /* the gap between halves is the net */ }
+.mini[data-orient="portrait"] { grid-template-rows: 1fr 1fr; width: 92px; height: 116px; }
+.mini[data-orient="landscape"] { grid-template-columns: 1fr 1fr; width: 150px; height: 76px; }
+.mini-half { display: grid; gap: 2px; background: var(--ink-2); }
+.mini[data-orient="portrait"] .mini-half { grid-template-columns: 1fr 1fr; }
+.mini[data-orient="landscape"] .mini-half { grid-template-rows: 1fr 1fr; }
+.box { display: grid; place-items: center; min-width: 0; padding: 2px; background: var(--panel); color: var(--ink-2); font-size: 10px; font-weight: 700; line-height: 1.1; text-align: center; overflow: hidden; transition: background-color 200ms ease, color 200ms ease, box-shadow 200ms ease; }
+.mini-half[data-side="A"] .box.srv { background: var(--a); color: var(--a-ink); }
+.mini-half[data-side="B"] .box.srv { background: var(--b); color: var(--b-ink); }
+.mini-half[data-side="A"] .box.rcv { box-shadow: inset 0 0 0 2px var(--a); color: var(--ink); }
+.mini-half[data-side="B"] .box.rcv { box-shadow: inset 0 0 0 2px var(--b); color: var(--ink); }
 
 .banner { position: absolute; left: 50%; top: 50%; padding: 16px 24px; border-radius: 16px; background: var(--ink); color: var(--bg); font-weight: 800; font-size: clamp(20px, 4vw, 30px); text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); opacity: 0; transform: translate(-50%, -50%) scale(0.96); transition: opacity 220ms ease, transform 260ms var(--ease-out); pointer-events: none; cursor: pointer; }
 .banner.on { opacity: 1; transform: translate(-50%, -50%); pointer-events: auto; }

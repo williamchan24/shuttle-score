@@ -104,6 +104,20 @@ export function receiverName(s: MatchState): string {
   return s.config.names[other(s.server)][i];
 }
 
+/**
+ * Who stands in each of a side's service courts right now.
+ * Singles: the one player stands in the court the serve is in (server and receiver are diagonal,
+ * both in the same-named court), the other court is empty. Doubles: both courts are filled.
+ */
+export function positions(s: MatchState, side: Side): Record<Court, string | null> {
+  const names = s.config.names[side];
+  if (s.config.mode === 'singles') {
+    return serviceCourt(s) === 'right' ? { right: names[0], left: null } : { right: null, left: names[0] };
+  }
+  const r = s.right[side];
+  return { right: names[r], left: names[1 - r] };
+}
+
 export function sideName(c: Config, side: Side): string {
   return c.mode === 'doubles' ? `${c.names[side][0]} & ${c.names[side][1]}` : c.names[side][0];
 }
