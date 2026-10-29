@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0E1217" />
+    <meta name="description" content="A badminton scoreboard for your phone: tap to score, proper service courts for singles and doubles, umpire voice calls, works offline." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+    <link rel="apple-touch-icon" href="./icon.svg" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <title>Shuttle Score</title>
+  </head>
+  <body>
+    <!-- SETUP -->
+    <main class="screen setup" id="setup">
+      <header class="setup-head">
+        <h1 class="brand">Shuttle<span>Score</span></h1>
+        <p class="muted">Tap to score. It keeps the service courts right for you.</p>
+      </header>
+
+      <div class="resume" id="resume" hidden>
+        <span id="resume-text">Match in progress</span>
+        <button class="btn btn-small" type="button" id="resume-btn">Resume</button>
+      </div>
+
+      <form id="setup-form" class="setup-form" autocomplete="off">
+        <fieldset class="seg">
+          <legend>Format</legend>
+          <input type="radio" name="mode" id="m-s" value="singles" checked /><label for="m-s">Singles</label>
+          <input type="radio" name="mode" id="m-d" value="doubles" /><label for="m-d">Doubles</label>
+        </fieldset>
+
+        <fieldset class="seg">
+          <legend>Match</legend>
+          <input type="radio" name="bestOf" id="b-3" value="3" checked /><label for="b-3">Best of 3</label>
+          <input type="radio" name="bestOf" id="b-1" value="1" /><label for="b-1">One game</label>
+        </fieldset>
+
+        <div class="teams">
+          <fieldset class="team team-a">
+            <legend>Side A</legend>
+            <input name="a0" maxlength="18" placeholder="Player 1" aria-label="Side A, player 1" />
+            <input name="a1" maxlength="18" placeholder="Player 2" aria-label="Side A, player 2" class="dbl" />
+          </fieldset>
+          <fieldset class="team team-b">
+            <legend>Side B</legend>
+            <input name="b0" maxlength="18" placeholder="Player 1" aria-label="Side B, player 1" />
+            <input name="b1" maxlength="18" placeholder="Player 2" aria-label="Side B, player 2" class="dbl" />
+          </fieldset>
+        </div>
+
+        <fieldset class="seg">
+          <legend>Serves first</legend>
+          <input type="radio" name="first" id="f-a" value="A" checked /><label for="f-a">Side A</label>
+          <input type="radio" name="first" id="f-b" value="B" /><label for="f-b">Side B</label>
+        </fieldset>
+
+        <button class="btn btn-primary btn-block" type="submit">Start match</button>
+      </form>
+
+      <section class="history" id="history" hidden>
+        <h2>Recent matches</h2>
+        <ol id="history-list"></ol>
+      </section>
+    </main>
+
+    <!-- MATCH -->
+    <main class="screen match" id="match" hidden>
+      <div class="bar">
+        <button class="icon-btn" type="button" id="end-btn" aria-label="End match">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+        <p class="game-label" id="game-label">Game 1</p>
+        <div class="bar-right">
+          <button class="icon-btn" type="button" id="voice-btn" aria-label="Voice calls" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" /><path class="wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" /></svg>
+          </button>
+          <button class="icon-btn" type="button" id="undo-btn" aria-label="Undo last point" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5" /><path d="M4 9h10a6 6 0 0 1 0 12h-3" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="court" id="court">
+        <button class="half side-a" type="button" data-side="A">
+          <span class="names" data-names></span>
+          <span class="score" data-score>0</span>
+          <span class="games" data-games></span>
+          <span class="serve-tag" data-serve>Serving</span>
+        </button>
+        <button class="half side-b" type="button" data-side="B">
+          <span class="names" data-names></span>
+          <span class="score" data-score>0</span>
+          <span class="games" data-games></span>
+          <span class="serve-tag" data-serve>Serving</span>
+        </button>
+      </div>
+
+      <p class="status" id="status" aria-live="polite"></p>
+
+      <div class="banner" id="banner" role="status" hidden></div>
+    </main>
+
+    <!-- RESULT -->
+    <main class="screen done" id="done" hidden>
+      <p class="muted">Match won by</p>
+      <h1 class="winner" id="winner"></h1>
+      <table class="games-table">
+        <thead><tr><th scope="col">Game</th><th scope="col" id="th-a">A</th><th scope="col" id="th-b">B</th></tr></thead>
+        <tbody id="games-body"></tbody>
+      </table>
+      <div class="done-actions">
+        <button class="btn btn-primary" type="button" id="rematch-btn">Rematch</button>
+        <button class="btn" type="button" id="new-btn">New match</button>
+      </div>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

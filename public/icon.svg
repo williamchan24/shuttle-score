@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0E1217"/>
+  <!-- feathers -->
+  <path d="M176 120 L256 336 L336 120 Z" fill="#F3F1EC"/>
+  <path d="M216 120 L256 336 M296 120 L256 336" stroke="#C7CCD3" stroke-width="10"/>
+  <path d="M176 120 Q256 96 336 120" fill="none" stroke="#C7CCD3" stroke-width="10"/>
+  <!-- cork -->
+  <path d="M206 330 h100 v24 a50 50 0 0 1 -100 0 z" fill="#F5B83D"/>
+</svg>
