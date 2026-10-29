@@ -2,6 +2,8 @@
 
 A badminton scoreboard for your phone. Tap a side to give it the point, and Shuttle Score keeps the rules, the service courts and the umpire calls straight for you.
 
+I created this as I was constantly forgetting the score whenever I was playing.
+
 ## Features
 - **Singles and doubles**, best of 3 or one game
 - **Proper BWF scoring:** rally point to 21, win by 2 from 20-all, capped at 30; the game winner serves first next game
